@@ -1,0 +1,51 @@
+import express from "express";
+import bodyParser from "body-parser";
+import morgan from "morgan";
+const cors = require("cors");
+const cluster = require("cluster");
+const totalCPUs = require("os").cpus().length;
+const port = process.env.PORT || 8000;
+const db = require("./config/db");
+
+const app = express();
+
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(morgan("dev"));
+
+// const corsOptions = {
+//   origin: 'https://public.com',
+//   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+// }
+
+if (cluster.isMaster) {
+  // console.log(`Number of CPUs is ${totalCPUs}`);
+  // console.log(`Master ${process.pid} is running`);
+
+  // Fork workers.
+  for (let i = 0; i < totalCPUs; i++) {
+    cluster.fork();
+  }
+
+  cluster.on("exit", (worker: { process: { pid: any } }, code: any, signal: any) => {
+    console.log(`worker ${worker.process.pid} died`);
+    console.log("Let's fork another worker!");
+    cluster.fork();
+  });
+} else {
+  //routes
+  app.get("/", (req, res, next) => {
+    res.send("hello");
+  });
+  app.use("/api/v1", require("./routes"));
+
+  db.authenticate()
+    .then(() => {
+      console.log("DB Connected");
+    })
+    .catch((err: any) => {
+      console.log(`DB Connect error: ${err}`);
+    });
+  app.listen(port, () => console.log(`Server Started @ Port ${port}`));
+}
