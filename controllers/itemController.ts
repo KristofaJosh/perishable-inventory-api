@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { HttpStatusCode, ItemControllerInterface } from "./types";
+import { ItemTableInterface } from "../typings";
 const ItemsModel = require("../models/Items");
 const { Op } = require("sequelize");
 
@@ -97,6 +98,22 @@ const itemController = {
       .catch(() => {
         res.status(HttpStatusCode.INTERNAL_SERVER).send({ message: "Internal Server Error" });
       });
+  },
+
+  /**
+   * Remove expired items
+   */
+  removeExpired: function () {
+    return new Promise((resolve, reject) => {
+      ItemsModel.findAll().then((r: any) => {
+        r.forEach((data: ItemTableInterface) => {
+          if (data.expires < new Date().getTime()) {
+            ItemsModel.destroy({ where: { id: data.id } }).catch(reject);
+          }
+        });
+        resolve("cron done");
+      }).catch(reject);
+    });
   },
 };
 
