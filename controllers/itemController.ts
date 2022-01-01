@@ -93,7 +93,7 @@ const itemController = {
             { quantity: 0, data: [] },
           );
           res.status(HttpStatusCode.OK).json({ quantity: result.quantity, validTill: result.quantity ? result.data[0] : null });
-        } else res.status(HttpStatusCode.NOT_FOUND).json({});
+        } else res.status(HttpStatusCode.NOT_FOUND).json({quantity: 0, validTill: null});
       })
       .catch(() => {
         res.status(HttpStatusCode.INTERNAL_SERVER).send({ message: "Internal Server Error" });
