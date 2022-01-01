@@ -87,13 +87,13 @@ const itemController = {
           const result = response.reduce(
             (block: any, cur: any) => {
               block.quantity += cur.quantity;
-              block.data.push(+cur.dataValues.expires);
+              if (cur.quantity) block.data.push(+cur.dataValues.expires);
               return block;
             },
             { quantity: 0, data: [] },
           );
           res.status(HttpStatusCode.OK).json({ quantity: result.quantity, validTill: result.quantity ? result.data[0] : null });
-        } else res.status(HttpStatusCode.NOT_FOUND).json({quantity: 0, validTill: null});
+        } else res.status(HttpStatusCode.NOT_FOUND).json({ quantity: 0, validTill: null });
       })
       .catch(() => {
         res.status(HttpStatusCode.INTERNAL_SERVER).send({ message: "Internal Server Error" });
@@ -105,14 +105,16 @@ const itemController = {
    */
   removeExpired: function () {
     return new Promise((resolve, reject) => {
-      ItemsModel.findAll().then((r: any) => {
-        r.forEach((data: ItemTableInterface) => {
-          if (data.expires < new Date().getTime()) {
-            ItemsModel.destroy({ where: { id: data.id } }).catch(reject);
-          }
-        });
-        resolve("cron done");
-      }).catch(reject);
+      ItemsModel.findAll()
+        .then((r: any) => {
+          r.forEach((data: ItemTableInterface) => {
+            if (data.expires < new Date().getTime()) {
+              ItemsModel.destroy({ where: { id: data.id } }).catch(reject);
+            }
+          });
+          resolve("cron done");
+        })
+        .catch(reject);
     });
   },
 };
