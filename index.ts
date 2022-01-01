@@ -29,18 +29,23 @@ if (cluster.isMaster) {
     cluster.fork();
   });
 } else {
-  app.get("/", (req, res, next) => {
-    res.send("hello");
+  app.get("/api/v1", (req, res, next) => {
+    res.send("<h1>Perishable Inventory Pings 'Hello'</h1>");
   });
 
   // route versions entry
   app.use("/api/v1", require("./routes"));
+  // route versions end
 
   db.authenticate()
     .then(() => console.log("DB Connected"))
     .catch((err: any) => console.log(`DB Connect error: ${err}`));
-  
-  db.sync().then(() => {console.log("DBs Created!")})
+
+  db.sync()
+    .then(() => {
+      console.log("DBs Created!");
+    })
+    .catch((err: any) => console.log(`DB Creation error: ${err}`));
 
   app.listen(port, () => console.log(`Server Started @ Port ${port}`));
 }
