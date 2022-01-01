@@ -1,30 +1,28 @@
 # Perishable Inventory Server
+
 A stateless api server to manage perishable inventory.
 
-## Endpoints
+## Setup
+- create a .env file off .env.sample
+- do _yarn_
+- do _yarn start_
 
-Base URL: <host:port>/api
+## API Doc
 
-Add a lot of :item to the system
+- **local**: after project setup, visit [doc](http://localhost:8000/ai/v1)
+- **online**:
+  visit [doc](http://localhost:8000/ai/v1)
 
-```shell
-POST {{baseUrl}}/api/:item/add
+### Key Expectations:
 
-{"quantity": "Number", "expiry": "Number"}
-```
-quantity - quantity of item in the lot to be added
-expiry - milliseconds-since-epoch representing the expiry time of this lot
+- Server should be able to handle highly concurrent workloads - (used clusters to handle this).
+- For the database, please use any relational database - (postgres).
+- For interacting with the database, use whichever tool you prefer - (sequelize).
 
-  
-- POST /:item/sell
-sell a quantity of an item and reduce its inventory from the database.
-IN: {quantity: Number}
-quantity - quantity to be sold.
-OUT: {}
-  
-- GET /:item/quantity
-get non-expired quantity of the item from the system
-IN: {}
-OUT: {quantity: Number, validTill: Number | null}
-quantity - non-expired quantity of item
-validTill - milliseconds-since-epoch representing the maximum time  till which the returned quantity is valid. should be null if returned quantity is 0
+### Assumptions
+
+- API request is usually above 5000 and 100 concurrent request per day
+- API request is low on weekends
+- API has no authorization
+- API may have a different version in the future
+- More endpoints may be created

@@ -1,3 +1,4 @@
+require("dotenv").config();
 import express from "express";
 import bodyParser from "body-parser";
 import morgan from "morgan";
@@ -14,15 +15,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
-// const corsOptions = {
-//   origin: 'https://public.com',
-//   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-// }
-
 if (cluster.isMaster) {
-  // console.log(`Number of CPUs is ${totalCPUs}`);
-  // console.log(`Master ${process.pid} is running`);
-
+  console.log(`Number of CPUs is ${totalCPUs}`);
+  console.log(`Master ${process.pid} is running`);
   // Fork workers.
   for (let i = 0; i < totalCPUs; i++) {
     cluster.fork();
@@ -34,18 +29,16 @@ if (cluster.isMaster) {
     cluster.fork();
   });
 } else {
-  //routes
   app.get("/", (req, res, next) => {
     res.send("hello");
   });
+
+  // route versions entry
   app.use("/api/v1", require("./routes"));
 
   db.authenticate()
-    .then(() => {
-      console.log("DB Connected");
-    })
-    .catch((err: any) => {
-      console.log(`DB Connect error: ${err}`);
-    });
+    .then(() => console.log("DB Connected"))
+    .catch((err: any) => console.log(`DB Connect error: ${err}`));
+
   app.listen(port, () => console.log(`Server Started @ Port ${port}`));
 }

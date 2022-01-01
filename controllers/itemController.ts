@@ -26,8 +26,8 @@ const itemController = {
       .then(() => {
         res.status(HttpStatusCode.CREATED).json({});
       })
-      .catch(() => {
-        res.status(HttpStatusCode.INTERNAL_SERVER).send({ message: "Internal Server Error" });
+      .catch((error: any) => {
+        res.status(HttpStatusCode.INTERNAL_SERVER).send({ message: error });
       });
   },
 
@@ -69,8 +69,8 @@ const itemController = {
           }
         } else res.status(HttpStatusCode.NOT_FOUND).json({});
       })
-      .catch(() => {
-        res.status(HttpStatusCode.INTERNAL_SERVER).send({ message: "Internal Server Error" });
+      .catch((error: any) => {
+        res.status(HttpStatusCode.INTERNAL_SERVER).send({ message: error });
       });
   },
 

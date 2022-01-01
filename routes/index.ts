@@ -1,9 +1,15 @@
 import express from "express";
 const router = express.Router();
+const swaggerUi = require("swagger-ui-express");
+const swaggerDoc = require("../docs/apidoc");
 
-const itemRoutes = require("./item")
+// import routes here
+const itemRoutes = require("./item");
 
-// create routes here
-router.use('/', itemRoutes);
+// initialize routes here
+router.use("/", itemRoutes);
 
-module.exports = router
+const options = { explorer: true };
+router.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc, options));
+
+module.exports = router;
