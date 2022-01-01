@@ -3,15 +3,18 @@
 A stateless api server to manage perishable inventory.
 
 ## Setup
-- create a .env file off .env.sample
-- do _yarn_
-- do _yarn start_
+
+##### You need [Node](https://nodejs.org/en/) and [Postgres](https://www.pgadmin.org/download/) DB to run this app
+
+- create a _**.env**_ file off _**.env.sample**_ at the root of this folder
+- do `yarn`
+- make sure your db server (pgAdmin) is running.
+- do `yarn start`
 
 ## API Doc
 
-- **local**: after project setup, visit [doc](http://localhost:8000/ai/v1)
-- **online**:
-  visit [doc](http://localhost:8000/ai/v1)
+- **local**: after project setup, visit [doc](http://localhost:8000/ai/v1/docs)
+- **online**: visit [doc](http://localhost:8000/ai/v1/docs)
 
 ### Key Expectations:
 

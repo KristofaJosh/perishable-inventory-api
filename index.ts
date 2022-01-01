@@ -39,6 +39,8 @@ if (cluster.isMaster) {
   db.authenticate()
     .then(() => console.log("DB Connected"))
     .catch((err: any) => console.log(`DB Connect error: ${err}`));
+  
+  db.sync().then(() => {console.log("DBs Created!")})
 
   app.listen(port, () => console.log(`Server Started @ Port ${port}`));
 }
