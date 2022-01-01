@@ -17,8 +17,10 @@
     "typescript": "^4.5.4"
   },
   "scripts": {
+    "start": "node build/index.js",
     "server": "tsc && node build/index.js",
-    "start": "nodemon -e ts -w ./ -x yarn server"
+    "dev": "nodemon -e ts -w ./ -x yarn server",
+    "postinstall": "tsc"
   },
   "engines": {
     "node": ">=4.0"
