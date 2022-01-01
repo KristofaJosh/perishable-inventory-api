@@ -25,7 +25,7 @@ if (cluster.isMaster) {
     cluster.fork();
   }
 
-  cluster.on("exit", (worker: { process: { pid: any } }, code: any, signal: any) => {
+  cluster.on("exit", (worker: { process: { pid: any } }) => {
     console.log(`worker ${worker.process.pid} died`);
     console.log("Let's fork another worker!");
     cluster.fork();
@@ -42,8 +42,7 @@ if (cluster.isMaster) {
     .catch((err: any) => console.log(`DB Creation error: ${err}`));
 
   // runs every saturday mid-night -- assumes our analytics says we have low traffic on saturdays
-  // cronSchedule.scheduleJob("remove-expired", "0 0 * * Sat", function () {
-  cronSchedule.scheduleJob("remove-expired", "* * * * * *", function () {
+  cronSchedule.scheduleJob("remove-expired", "0 0 * * Sat", function () {
     itemController
       .removeExpired()
       .then((res: string) => {
@@ -53,7 +52,7 @@ if (cluster.isMaster) {
       .catch(() => cronSchedule.cancelJob("remove-expired"));
   });
 } else {
-  app.get("/api/v1", (req, res, next) => {
+  app.get("/api/v1", (req, res) => {
     res.send("<h1>Perishable Inventory Pings 'Hello'</h1>");
   });
 
