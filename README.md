@@ -30,3 +30,6 @@ A stateless api server to manage perishable inventory.
 - API has no authorization
 - API may have a different version in the future
 - More endpoints may be created
+
+### Test
+_yarn test_
