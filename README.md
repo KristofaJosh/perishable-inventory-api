@@ -14,7 +14,7 @@ A stateless api server to manage perishable inventory.
 ## API Doc
 
 - **local**: after project setup, visit [doc](http://localhost:8000/ai/v1/docs)
-- **online**: visit [doc](http://localhost:8000/ai/v1/docs)
+- **online**: visit [doc](https://perishable-api.herokuapp.com/api/v1/docs)
 
 ### Key Expectations:
 

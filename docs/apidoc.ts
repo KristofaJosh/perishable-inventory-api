@@ -12,7 +12,7 @@ module.exports = {
       url: "http://localhost:8000/api/v1",
     },
     {
-      url: "http://localhost:8000/api/v1",
+      url: "https://perishable-api.herokuapp.com/api/v1",
     },
   ],
   tags: [
