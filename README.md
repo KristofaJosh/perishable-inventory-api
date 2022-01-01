@@ -24,6 +24,7 @@ A stateless api server to manage perishable inventory.
 
 ### Assumptions
 
+- We are using a single server
 - API request is usually above 5000 and 100 concurrent request per day
 - API request is low on weekends
 - API has no authorization

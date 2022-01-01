@@ -7,6 +7,8 @@ const cluster = require("cluster");
 const totalCPUs = require("os").cpus().length;
 const port = process.env.PORT || 8000;
 const db = require("./config/db");
+const cronSchedule = require("node-schedule");
+const itemController = require("./controllers/itemController");
 
 const app = express();
 
@@ -28,14 +30,6 @@ if (cluster.isMaster) {
     console.log("Let's fork another worker!");
     cluster.fork();
   });
-} else {
-  app.get("/api/v1", (req, res, next) => {
-    res.send("<h1>Perishable Inventory Pings 'Hello'</h1>");
-  });
-
-  // route versions entry
-  app.use("/api/v1", require("./routes"));
-  // route versions end
 
   db.authenticate()
     .then(() => console.log("DB Connected"))
@@ -47,5 +41,25 @@ if (cluster.isMaster) {
     })
     .catch((err: any) => console.log(`DB Creation error: ${err}`));
 
+  // runs every saturday mid-night -- assumes our analytics says we have low traffic on saturdays
+  // cronSchedule.scheduleJob("remove-expired", "0 0 * * Sat", function () {
+  cronSchedule.scheduleJob("remove-expired", "* * * * * *", function () {
+    itemController
+      .removeExpired()
+      .then((res: string) => {
+        cronSchedule.cancelJob("remove-expired");
+        console.log(res, " --cron");
+      })
+      .catch(() => cronSchedule.cancelJob("remove-expired"));
+  });
+} else {
+  app.get("/api/v1", (req, res, next) => {
+    res.send("<h1>Perishable Inventory Pings 'Hello'</h1>");
+  });
+
+  // route versions entry
+  app.use("/api/v1", require("./routes"));
+  // route versions end
+  
   app.listen(port, () => console.log(`Server Started @ Port ${port}`));
 }
